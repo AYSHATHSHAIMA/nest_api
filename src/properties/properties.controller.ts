@@ -10,22 +10,24 @@ import { UpdatePropertyDto } from './dto/update-property.dtto';
 export class PropertiesController {
   constructor(private service: PropertiesService) {}
 
-   @Post()
-  @UseInterceptors(FileInterceptor('image', {
-    storage: diskStorage({
-      destination: './uploads',
-      filename: (req, file, cb) => {
-        const name = `${Date.now()}${extname(file.originalname)}`;
-        cb(null, name);
-      },
-    }),
-  }))
-  create(@Body() dto: CreatePropertyDto, @UploadedFile() image: any) {
-    if (image) {
-      dto.image = image.filename; 
-    }
-    return this.service.create(dto);
+  @Post()
+@UseInterceptors(FileInterceptor('image', {
+  storage: diskStorage({
+    destination: './uploads',
+    filename: (req, file, cb) => {
+      const name = `${Date.now()}${extname(file.originalname)}`;
+      cb(null, name);
+    },
+  }),
+}))
+create(@Body() dto: CreatePropertyDto, @UploadedFile() image?: Express.Multer.File) {
+  // If file is uploaded, use filename
+  if (image) {
+    dto.image = `/uploads/${image.filename}`; 
   }
+  
+  return this.service.create(dto);
+}
 
 
   

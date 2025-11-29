@@ -17,4 +17,6 @@ export class CreatePropertyDto {
   @IsString()
   description?: string;
     image: any;
+
+    
 }
